@@ -27,3 +27,12 @@ module.exports.checkEmailFn = async (Email) => {
         console.log(error)
     }
 }
+
+module.exports.UserLoginFn = async (data) => {
+    try {
+        const Checkuser = await UserModel.find({Username:data})
+        return Checkuser;
+    } catch (error) {
+        console.log(error)
+    }
+}

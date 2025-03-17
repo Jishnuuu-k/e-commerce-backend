@@ -1,4 +1,4 @@
-const {UserReg} = require("../Usecause/Userusecause")
+const {UserReg,Userlogin} = require("../Usecause/Userusecause")
 const {CheckUsernameFn,checkEmailFn} = require ("../Repo/Userrepo");
 const { json } = require("express");
 const UserRegistration = async (req,res) =>{
@@ -36,7 +36,18 @@ const UserRegistration = async (req,res) =>{
 
 const UserLogin = async (req,res) => {
     try {
-        
+        let User = await Userlogin(req.body)
+        if(User){
+            res.json({
+                success:true,
+                data : User
+            })
+        }else{
+            res.json({
+                success:false,
+                result:"Password Or Email is incorrect"
+            })
+        }
     } catch (error) {
         console.log(error)
     }

@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const {UserRegistration} = require ("../Repo/Userrepo")
+const {UserRegistration,UserLoginFn} = require ("../Repo/Userrepo")
 module.exports.UserReg = async(data) => {
     try {
         let {Password} = data
@@ -9,6 +9,23 @@ module.exports.UserReg = async(data) => {
 
         await UserRegistration(data)
         return true
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+module.exports.Userlogin = async(data) => {
+    try {
+        let {Username} = data
+        let User = await UserLoginFn(Username)
+        User = User[0]
+        let result = await bcrypt.compare(data.Password,User.Password)
+        console.log(result)
+        if(result == true){
+           return User
+        }else{
+           return false 
+        }
     } catch (error) {
         console.log(error)
     }
