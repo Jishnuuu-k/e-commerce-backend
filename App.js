@@ -3,17 +3,17 @@ const app = express();
 
 const DbConnection = require('./Config/Config');
 const UserRouter = require('./Users/Routes/Userroutes');
-// const cors = require('cors')
+const cors = require('cors')
 // Middleware
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
-// app.use(cors())
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cors())
 
 // Database Connection
 async function connectDB() {
     try {
         await DbConnection();
-        console.log("Database connected !");
+        console.log("✅ Database connected !");
     } catch (error) {
         console.error("Database connection failed:", error);
     }
