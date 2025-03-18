@@ -3,6 +3,7 @@ const app = express();
 
 const DbConnection = require('./Config/Config');
 const UserRouter = require('./Users/Routes/Userroutes');
+const productRoutes = require("./Users/Routes/ProductRouter");
 const cors = require('cors')
 // Middleware
 app.use(express.json());
@@ -23,6 +24,8 @@ connectDB();
 
 // Routes
 app.use('/Users', UserRouter);
+app.use("/Api", productRoutes);
+app.use("/uploads", express.static("uploads"));
 
 // Start the server
 const PORT = 7000;

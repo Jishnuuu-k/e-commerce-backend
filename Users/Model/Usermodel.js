@@ -6,7 +6,7 @@ const userScema = new  mongoose.Schema({
         },
         Email :{
             type:String,
-            require:true
+            required:true
         },
         Username :{
             type : String,
@@ -14,11 +14,33 @@ const userScema = new  mongoose.Schema({
         },
         PhoneNum:{
             type:String,
-            require:true
+            required:true
         },
+        Gender:{
+            type:String,
+            required:true
+        },
+        StreetAddress:{
+            type:String,
+            required:true
+        },
+        City:{
+            type:String,
+            required:true
+        },
+        Pincode:{
+            type:String,
+            required:true
+        },
+
         Password:{
             type:String,
-            require:true
+            required:true
+        },
+        role: {
+            type: String,
+            enum: ["user", "admin"],  // Only allow "user" or "admin"
+            default: "user"           // By default, all new users are buyers
         }
 })
 

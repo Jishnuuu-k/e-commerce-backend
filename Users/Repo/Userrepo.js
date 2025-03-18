@@ -27,10 +27,19 @@ module.exports.checkEmailFn = async (Email) => {
         console.log(error)
     }
 }
+module.exports.checkroleFn = async ({role}) => {
+    try {
+        const ExistingRole = await UserModel.findOne({role: "admin"})
+        console.log(ExistingRole,"Admin is here")
+        return ExistingRole ? true : false;
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 module.exports.UserLoginFn = async (data) => {
     try {
-        const Checkuser = await UserModel.find({Username:data})
+        const Checkuser = await UserModel.findOne({Username:data})
         return Checkuser;
     } catch (error) {
         console.log(error)
