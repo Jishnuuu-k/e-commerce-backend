@@ -36,11 +36,6 @@ const userScema = new  mongoose.Schema({
         Password:{
             type:String,
             required:true
-        },
-        role: {
-            type: String,
-            enum: ["user", "admin"],  // Only allow "user" or "admin"
-            default: "user"           // By default, all new users are buyers
         }
 })
 

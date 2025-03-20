@@ -1,9 +1,11 @@
 const express = require('express');
+const dotenv = require("dotenv");
+const path = require("path");
 const app = express();
 
 const DbConnection = require('./Config/Config');
 const UserRouter = require('./Users/Routes/Userroutes');
-const productRoutes = require("./Users/Routes/ProductRouter");
+const productRoutes = require("./Seller/Routes/ProductRouter");
 const cors = require('cors')
 // Middleware
 app.use(express.json());
@@ -24,8 +26,8 @@ connectDB();
 
 // Routes
 app.use('/Users', UserRouter);
-app.use("/Api", productRoutes);
-app.use("/uploads", express.static("uploads"));
+app.use("/Admin", productRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "Uploads")));   
 
 // Start the server
 const PORT = 7000;

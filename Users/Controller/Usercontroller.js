@@ -1,7 +1,7 @@
-const {UserReg,Userlogin} = require("../Usecause/Userusecause")
-const {CheckUsernameFn,checkEmailFn,checkroleFn} = require ("../Repo/Userrepo");
+const { UserReg, Userlogin, Purcahsee} = require("../Usecause/Userusecause")
+const {CheckUsernameFn, checkEmailFn, FindUser, FindProduct} = require ("../Repo/Userrepo");
 const { json } = require("express");
-
+const jwt = require("jsonwebtoken");
 
 const UserRegistration = async (req, res) => {
     try {
@@ -18,13 +18,7 @@ const UserRegistration = async (req, res) => {
             return res.json({ message: "Email already registered. Please login.", success: false });
         }
 
-        // If role is "admin", check if an admin already exists
-        if (role === "admin") {
-            const existingAdmin = await checkroleFn({ role: "admin" });
-            if (existingAdmin) {
-                return res.status(400).json({ message: "Seller account already exists!", success: false });
-            }
-        }
+
 
         // If role is missing, default to "user"
         req.body.role = role || "user";
@@ -41,6 +35,7 @@ const UserRegistration = async (req, res) => {
 
 
 const UserLogin = async (req, res) => {
+    console.log(req.body)
     try {
         let response = await Userlogin(req.body);
         console.log(response)
@@ -76,11 +71,56 @@ const UserLogin = async (req, res) => {
     }
 }
 
-const Booking = async (req,res) => {
+const Purchase = async (req, res) => {
     try {
-        
+        const Userentry = req.body;
+        console.log("🛍️ Purchase Request Received:", Userentry);
+
+        let { _id } = Userentry;
+        let Product = await FindProduct(_id);
+
+        if (!Product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        const token = req.headers.authorization?.split(" ")[1];
+
+        if (!token) {
+            return res.status(401).json({ success: false, message: "Unauthorized. No token provided." });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        let { Username } = decoded;
+        let User = await FindUser(Username);
+
+        if (!User) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // ✅ Call Usecase and get totalPrice
+        const purchaseResponse = await Purcahsee(Userentry, Product, User);
+
+        // ✅ Respond with Total Price
+        res.json({
+            success: true,
+            message: "Purchase successful",
+            totalPrice: purchaseResponse.totalPrice,
+            user: {
+                id: User._id,
+                username: User.Username,
+            },
+            product: {
+                id: Product._id,
+                name: Product.name,
+                price: Product.price,
+                quantity: Userentry.Quantity,
+            }
+        });
+
     } catch (error) {
-        console.log(error)
+        console.error("❌ Purchase error:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
-}
-module.exports = {UserRegistration,UserLogin,Booking}
+};
+
+module.exports = {UserRegistration,UserLogin,Purchase}

@@ -1,5 +1,5 @@
 const UserModel = require("../Model/Usermodel")
-
+const ProductModel = require("../../Seller/Model/ProductModel")
 module.exports.UserRegistration = async (data) => {
     try {
         await UserModel.create(data)
@@ -11,7 +11,6 @@ module.exports.UserRegistration = async (data) => {
 module.exports.CheckUsernameFn = async (Username) => {
     try {
         const existingUser = await UserModel.findOne({ Username });
-        console.log(existingUser,"USER Exist")
         return existingUser ? true : false;
     } catch (error) {
         console.log(error)
@@ -27,20 +26,30 @@ module.exports.checkEmailFn = async (Email) => {
         console.log(error)
     }
 }
-module.exports.checkroleFn = async ({role}) => {
-    try {
-        const ExistingRole = await UserModel.findOne({role: "admin"})
-        console.log(ExistingRole,"Admin is here")
-        return ExistingRole ? true : false;
-    } catch (error) {
-        console.log(error)
-    }
-}
+
 
 module.exports.UserLoginFn = async (data) => {
     try {
         const Checkuser = await UserModel.findOne({Username:data})
         return Checkuser;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+module.exports.FindUser = async (Username) => {
+    try {
+        const ExistingUser = await UserModel.findOne({ Username });
+        return ExistingUser 
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+module.exports.FindProduct = async (_id) => {
+    try {
+        const Product = await ProductModel.findOne({ _id });
+        return Product 
     } catch (error) {
         console.log(error)
     }

@@ -38,7 +38,7 @@ module.exports.Userlogin = async (data) => {
 
         // Generate JWT Token
         const token = jwt.sign(
-            { userId: User._id,role: User.role, email: User.Email, username: User.Username },
+            { userId: User._id, email: User.Email, Username: User.Username },
             JWT_SECRET,
             { expiresIn: JWT_EXPIRES_IN }
         );
@@ -47,5 +47,28 @@ module.exports.Userlogin = async (data) => {
     } catch (error) {
         console.log(error);
         return { error: "Internal server error" };
+    }
+};
+
+module.exports.Purcahsee = async (Userentry, Product, User) => {
+    try {
+        console.log(Userentry, "✅ USER ENTRY HAS BEEN ARRIVED IN USECASE ");
+        console.log(Product, "✅ PRODUCT HAS BEEN ARRIVED IN USECASE ");
+        console.log(User, "✅ USER HAS BEEN ARRIVED IN USECASE ");
+
+        let { Quantity } = Userentry;
+        let { price } = Product;
+
+        let totalPrice = Number(Quantity) * Number(price);
+        console.log("🛒 Calculated Total Price:", totalPrice);
+
+        if (isNaN(totalPrice)) {
+            throw new Error("Calculation error: Quantity or Price is not a valid number");
+        }
+
+        return { success: true, totalPrice }; // Return total price to the controller
+    } catch (error) {
+        console.error("❌ Purchase Usecase Error:", error);
+        throw error;
     }
 };
