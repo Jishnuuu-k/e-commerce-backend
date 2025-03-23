@@ -1,3 +1,4 @@
+const Category = require('../Model/CategoryModel');
 const ProductModel = require("../Model/ProductModel");
 const AdminModel = require("../Model/AdminModel")
 
@@ -19,6 +20,11 @@ module.exports.AdminLogFn = async (Username) => {
         console.log(error)
     }
 }
+
+module.exports.createCategory = async (categoryData) => {
+    return await Category.create(categoryData);
+};
+
 // Add a new product with custom product ID
 module.exports.createProduct = async (data) => {
     try {

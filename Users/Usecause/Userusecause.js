@@ -57,7 +57,7 @@ module.exports.Purcahsee = async (Userentry, Product, User) => {
         console.log(User, "✅ USER HAS BEEN ARRIVED IN USECASE ");
 
         let { Quantity } = Userentry;
-        let { price } = Product;
+        let { price, stock } = Product;
 
         let totalPrice = Number(Quantity) * Number(price);
         console.log("🛒 Calculated Total Price:", totalPrice);

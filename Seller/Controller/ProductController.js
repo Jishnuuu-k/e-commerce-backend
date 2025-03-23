@@ -1,5 +1,6 @@
 const path = require("path");
 const AdminModel = require("../Model/AdminModel")
+const CategoryRepo = require('../Repo/ProductRepo');
 const { AdminReg, AdminLog, addProduct, fetchAllProducts, fetchProductById, modifyProduct, removeProduct } = require("../Usecase/ProductUsecase");
 
 exports.AdminRegistration = async (req, res) => {
@@ -41,6 +42,15 @@ exports.AdminLogin = async (req,res) => {
         });
     }
 }
+
+exports.createCategory = async (req, res) => {
+    try {
+        const newCategory = await CategoryRepo.createCategory(req.body); // ✅ Calling Repo Function
+        res.status(201).json({ message: 'Category created successfully', category: newCategory });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 exports.createProduct = async (req, res) => {
     try {
