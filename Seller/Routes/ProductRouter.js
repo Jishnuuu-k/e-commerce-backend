@@ -9,7 +9,7 @@ router.post("/auth/adminregistration",AdminRegistration)
 router.post("/auth/adminlogin",AdminLogin)
 
 router.post("/admin/add-category",createCategory)
-// router.get("/admin/categories",getCategories)
+router.get("/admin/categories",getCategories)
 
 // Add a Product to a Subcategory → POST /Admin/admin/add-product
 // Get Products by Subcategory → GET /products/:subCategoryId

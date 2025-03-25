@@ -25,6 +25,16 @@ module.exports.createCategory = async (categoryData) => {
     return await Category.create(categoryData);
 };
 
+
+module.exports.getCategories = async (_id) => {
+    try {
+        const CheckCategory = await Category.findOne({_id})
+        return CheckCategory
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Add a new product with custom product ID
 module.exports.createProduct = async (data) => {
     try {
