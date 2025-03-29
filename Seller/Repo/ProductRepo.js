@@ -28,7 +28,7 @@ module.exports.createCategory = async (categoryData) => {
 
 module.exports.getCategories = async (_id) => {
     try {
-        const CheckCategory = await Category.findOne({_id})
+        const CheckCategory = await Category.find({_id})
         return CheckCategory
     } catch (error) {
         console.log(error)

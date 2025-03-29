@@ -1,9 +1,10 @@
 const { UserReg, Userlogin, Purcahsee} = require("../Usecause/Userusecause")
-const {CheckUsernameFn, checkEmailFn, FindUser, FindProduct} = require ("../Repo/Userrepo");
+const {CheckUsernameFn, checkEmailFn, FindUser, FindProduct, getallcategoryFn} = require ("../Repo/Userrepo");
 const { json } = require("express");
 const jwt = require("jsonwebtoken");
 
 const UserRegistration = async (req, res) => {
+    console.log(req.body,"FROM FRONTEND")
     try {
         const { Username, Email, role } = req.body;
 
@@ -58,8 +59,8 @@ const UserLogin = async (req, res) => {
                 PhoneNum: response.user.PhoneNum,
                 Gender: response.user.Gender,
                 StreetAddress: response.user.StreetAddress,
-                city: response.user.city,
-                pincode: response.user.pincode
+                city: response.user.City,
+                pincode: response.user.Pincode
             }
         });
     } catch (error) {
@@ -123,4 +124,14 @@ const Purchase = async (req, res) => {
     }
 };
 
-module.exports = {UserRegistration,UserLogin,Purchase}
+const getallcategories = async (req,res) => {
+    try {
+       const Categories = await getallcategoryFn();
+       console.log(Categories)
+       res.json(Categories)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+module.exports = {UserRegistration, UserLogin, Purchase, getallcategories}

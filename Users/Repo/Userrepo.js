@@ -1,5 +1,7 @@
 const UserModel = require("../Model/Usermodel")
 const ProductModel = require("../../Seller/Model/ProductModel")
+const CategoryModel = require("../../Seller/Model/CategoryModel")
+
 module.exports.UserRegistration = async (data) => {
     try {
         await UserModel.create(data)
@@ -50,6 +52,15 @@ module.exports.FindProduct = async (_id) => {
     try {
         const Product = await ProductModel.findOne({ _id });
         return Product 
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+module.exports.getallcategoryFn = async() => {
+    try {
+        const Allcategories = await CategoryModel.find()
+        return Allcategories
     } catch (error) {
         console.log(error)
     }
