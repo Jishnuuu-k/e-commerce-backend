@@ -1,8 +1,8 @@
-const { AdminReg, AdminLog, addCategoryUsecase, addSubcategoryUsecase, createProduct, updateProduct, deleteProduct, getProductsBySubcategory } = require("../Usecase/ProductUsecase");
+const { adminRegister, adminLogin, addCategoryUsecase, addSubcategoryUsecase, createProduct, updateProduct, deleteProduct, getProductsBySubcategory } = require("../Usecase/ProductUsecase");
 
 exports.AdminRegistration = async (req, res) => {
     try {
-        await AdminReg(req.body);
+        await adminRegister(req.body);
         res.status(201).json({ 
             message: "Admin registered successfully!", 
             success: true 
@@ -18,7 +18,7 @@ exports.AdminRegistration = async (req, res) => {
 
 exports.AdminLogin = async (req, res) => {
     try {
-        const response = await AdminLog(req.body);
+        const response = await adminLogin(req.body);
 
         if (response.error) {
             return res.status(401).json({

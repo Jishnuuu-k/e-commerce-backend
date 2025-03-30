@@ -5,49 +5,63 @@ const { AdminRegFn, AdminLogFn, addCategoryFn, addSubcategoryFn, createProductFn
 const cloudinary = require("../../Config/CloudinaryConfig"); 
 
 dotenv.config();
-const JWT_SECRET = process.env.JWT_SECRET || "default_secret"; // Fallback in case .env is missing
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
-module.exports.AdminReg = async (data) => {
-    console.log(data,"USECASE")
-    try {
-        let {Password} = data
-        const saltround = 10
-        const HashedPassword = await bcrypt.hash(Password,saltround)
-        data.Password = HashedPassword
-        await AdminRegFn(data)
-        return true
-    } catch (error) {
-        console.log(error)
-    }
-}
+const JWT_SECRET = process.env.JWT_SECRET || 'default_secret_key';
+const JWT_EXPIRES_IN = '1h';
 
-module.exports.AdminLog = async (data) => {
-    try {
-        let {Username} = data
-        let Admin = await AdminLogFn(Username)
-
-        if (!Admin) {
-            return { error: "Not found!" };
+module.exports = {
+    adminRegister: async (data) => {
+        try {
+            const { Password } = data;
+            const hashedPassword = await bcrypt.hash(Password, 10);
+            const adminData = { ...data, Password: hashedPassword };
+            await AdminRegFn(adminData);
+            return { success: true };
+        } catch (error) {
+            console.error('Registration Error:', error);
+            throw error;
         }
-        let Result = await bcrypt.compare(data.Password,Admin.Password)
+    },
 
-        if (!Result) {
-            return { error: "Invalid password!" };
+    adminLogin: async (data) => {
+        try {
+            const { Username, Password } = data;
+            const admin = await AdminLogFn(Username);
+
+            if (!admin) {
+                return { error: 'Admin not found' };
+            }
+
+            const isMatch = await bcrypt.compare(Password, admin.Password);
+            if (!isMatch) {
+                return { error: 'Invalid credentials' };
+            }
+
+            const token = jwt.sign(
+                {
+                    id: admin._id,
+                    username: admin.Username,
+                    role: 'admin'
+                },
+                JWT_SECRET,
+                { expiresIn: JWT_EXPIRES_IN }
+            );
+
+            return {
+                success: true,
+                token,
+                admin: {
+                    Fullname: admin.Fullname,
+                    Email: admin.Email,
+                    Username: admin.Username
+                }
+            };
+        } catch (error) {
+            console.error('Login Error:', error);
+            throw error;
         }
-
-        const token = jwt.sign(
-            { userId: Admin._id, email: Admin.Email, username: Admin.Username },  // Include userId
-            JWT_SECRET,
-            { expiresIn: "1h" }
-        );
-        
-         return { success: true, token, admin: Admin };
-
-    } catch (error) {
-        console.log(error)
     }
-}
+};
 
 module.exports.addCategoryUsecase = async (categoryData) => {
     try {
