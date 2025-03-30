@@ -1,14 +1,15 @@
-const mongoose = require("mongoose");
-const ProductSchema = new mongoose.Schema({
-    productId: { type: String, required: true, unique: true }, // Custom Product ID
-    productName: { type: String, required: true },
-    description: { type: String, required: true },
-    price: { type: Number, required: true },
-    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true }, // Changed: Referencing Category
-    subCategoryId: { type: mongoose.Schema.Types.ObjectId, required: true }, // Changed: Storing Subcategory Reference
-    stock: { type: Number, required: true, default: 1 },
-    image: { type: String, required: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true }
+const mongoose = require('mongoose');
+
+// Defines the Product document structure
+const productSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: String,
+  price: { type: Number, required: true },
+  images: [String], // Will store Cloudinary URLs
+  subcategory: { type: mongoose.Schema.Types.ObjectId, ref: 'Subcategory', required: true },
+  stock: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Product', ProductSchema);
+// Creates a model for the 'products' collection
+module.exports = mongoose.model('Product', productSchema);

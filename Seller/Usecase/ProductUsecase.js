@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv")
-const { AdminRegFn, AdminLogFn, createProduct, getAllProducts, getProductById, updateProduct, deleteProduct } = require("../Repo/ProductRepo");
+const { AdminRegFn, AdminLogFn, addCategoryFn, addSubcategoryFn } = require("../Repo/ProductRepo");
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret"; // Fallback in case .env is missing
@@ -48,42 +48,24 @@ module.exports.AdminLog = async (data) => {
     }
 }
 
-module.exports.addProduct = async (data) => {
+module.exports.addCategoryUsecase = async (categoryData) => {
     try {
-        return await createProduct(data);
+        return await addCategoryFn(categoryData);
     } catch (error) {
-        console.log("Error in Usecase - addProduct:", error);
+        if (error.code === 11000) {
+            throw new Error("Category name must be unique");
+        }
+        throw error;
     }
-};
+}
 
-module.exports.fetchAllProducts = async () => {
+module.exports.addSubcategoryUsecase = async (categoryId, subcategoryData) => {
     try {
-        return await getAllProducts();
+        return await addSubcategoryFn(categoryId, subcategoryData);
     } catch (error) {
-        console.log("Error in Usecase - fetchAllProducts:", error);
+        if (error.name === 'CastError') {
+            throw new Error("Invalid category ID");
+        }
+        throw error;
     }
-};
-
-module.exports.fetchProductById = async (productId) => {
-    try {
-        return await getProductById(productId);
-    } catch (error) {
-        console.log("Error in Usecase - fetchProductById:", error);
-    }
-};
-
-module.exports.modifyProduct = async (productId, data) => {
-    try {
-        return await updateProduct(productId, data);
-    } catch (error) {
-        console.log("Error in Usecase - modifyProduct:", error);
-    }
-};
-
-module.exports.removeProduct = async (productId) => {
-    try {
-        return await deleteProduct(productId);
-    } catch (error) {
-        console.log("Error in Usecase - removeProduct:", error);
-    }
-};
+}
