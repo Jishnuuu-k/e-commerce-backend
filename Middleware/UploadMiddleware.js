@@ -2,17 +2,30 @@ const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../Config/CloudinaryConfig");
 
-// Configure Cloudinary storage for multer
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "ecommerce-products", // Cloudinary folder name
-    allowed_formats: ["jpg", "png", "jpeg"],
-    transformation: [{ width: 500, height: 500, crop: "limit" }], // Resize if needed
-  },
+  cloudinary,
+  params: (req, file) => ({
+    folder: `ecommerce/products/${req.user._id}`, // User-specific folder
+    allowed_formats: ["jpg", "png", "jpeg", "webp"],
+    transformation: [
+      { width: 800, height: 800, crop: "limit", quality: "auto" }
+    ],
+    public_id: `${Date.now()}-${file.originalname.split('.')[0]}`
+  })
 });
 
-// Multer upload middleware using Cloudinary
-const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only images are allowed!'), false);
+  }
+};
+
+const upload = multer({ 
+  storage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+});
 
 module.exports = upload;

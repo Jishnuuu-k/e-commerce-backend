@@ -1,4 +1,4 @@
-const { AdminReg, AdminLog, addCategoryUsecase, addSubcategoryUsecase } = require("../Usecase/ProductUsecase");
+const { AdminReg, AdminLog, addCategoryUsecase, addSubcategoryUsecase, createProduct, updateProduct, deleteProduct, getProductsBySubcategory } = require("../Usecase/ProductUsecase");
 
 exports.AdminRegistration = async (req, res) => {
     try {
@@ -80,3 +80,53 @@ exports.addSubcategory = async (req, res) => {
         });
     }
 }
+
+exports.createProduct = async (req, res) => {
+    try {
+      const product = await createProduct({
+        ...req.body,
+        images: req.files.map(file => ({
+          public_id: file.public_id,
+          url: file.secure_url
+        }))
+      }, req.user._id);
+  
+      res.status(201).json({ success: true, product });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  };
+  
+  // Update Product
+  exports.updateProduct = async (req, res) => {
+    try {
+      const product = await updateProduct(
+        req.params.productId,
+        req.body,
+        req.user._id
+      );
+      res.json({ success: true, product });
+    } catch (error) {
+      res.status(403).json({ success: false, message: error.message });
+    }
+  };
+  
+  // Delete Product
+  exports.deleteProduct = async (req, res) => {
+    try {
+      await deleteProduct(req.params.productId, req.user._id);
+      res.json({ success: true, message: "Product deleted" });
+    } catch (error) {
+      res.status(403).json({ success: false, message: error.message });
+    }
+  };
+  
+  // Get Products by Subcategory
+  exports.getProductsBySubcategory = async (req, res) => {
+    try {
+      const products = await getProductsBySubcategory(req.params.subcategoryId);
+      res.json({ success: true, products });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  };

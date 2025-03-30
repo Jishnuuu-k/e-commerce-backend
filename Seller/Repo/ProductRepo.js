@@ -38,3 +38,25 @@ module.exports.addSubcategoryFn = async (categoryId, subcategoryData) => {
     
     return subcategory;
 }
+
+module.exports = {
+    createProductFn: async (productData) => {
+      return await ProductModel.create(productData);
+    },
+
+    updateProductFn: async (productId, updateData) => {
+      return await ProductModel.findByIdAndUpdate(
+        productId, 
+        updateData, 
+        { new: true }
+      );
+    },
+
+    deleteProductFn: async (productId) => {
+      return await ProductModel.findByIdAndDelete(productId);
+    },
+    
+    getProductByIdFn: async (productId) => {
+      return await ProductModel.findById(productId);
+    }
+  };

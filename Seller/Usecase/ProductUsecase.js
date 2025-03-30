@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv")
-const { AdminRegFn, AdminLogFn, addCategoryFn, addSubcategoryFn } = require("../Repo/ProductRepo");
+const { AdminRegFn, AdminLogFn, addCategoryFn, addSubcategoryFn, createProductFn, updateProductFn, deleteProductFn, getProductByIdFn } = require("../Repo/ProductRepo");
+const cloudinary = require("../../Config/CloudinaryConfig"); 
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret"; // Fallback in case .env is missing
@@ -69,3 +70,54 @@ module.exports.addSubcategoryUsecase = async (categoryId, subcategoryData) => {
         throw error;
     }
 }
+
+
+module.exports = {
+  createProduct: async (productData, userId) => {
+    try {
+      // Add createdBy reference
+      const productWithUser = { ...productData, createdBy: userId };
+      return await createProductFn(productWithUser);
+    } catch (error) {
+      // Auto-cleanup if DB fails
+      if (productData.images?.length) {
+        await cloudinary.api.delete_resources(
+          productData.images.map(img => img.public_id)
+        );
+      }
+      throw error;
+    }
+  },
+
+  updateProduct: async (productId, updateData, userId) => {
+    const existingProduct = await getProductByIdFn(productId);
+    
+    // Verify ownership
+    if (existingProduct.createdBy.toString() !== userId) {
+      throw new Error("Unauthorized product update");
+    }
+
+    return await updateProductFn(productId, updateData);
+  },
+
+  deleteProduct: async (productId, userId) => {
+    const product = await getProductByIdFn(productId);
+    
+    if (product.createdBy.toString() !== userId) {
+      throw new Error("Unauthorized product deletion");
+    }
+
+    // Delete images first
+    if (product.images?.length) {
+      await cloudinary.api.delete_resources(
+        product.images.map(img => img.public_id)
+      );
+    }
+
+    return await deleteProductFn(productId);
+  },
+
+  getProductsBySubcategory: async (subcategoryId) => {
+    return await getProductsBySubcategoryFn(subcategoryId);
+  }
+};
