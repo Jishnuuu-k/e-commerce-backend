@@ -5,12 +5,11 @@ const cloudinary = require("../Config/CloudinaryConfig");
 const storage = new CloudinaryStorage({
   cloudinary,
   params: (req, file) => ({
-    folder: `ecommerce/products/${req.user._id}`, // User-specific folder
+    folder: `ecommerce/products/${req.user._id}`,
     allowed_formats: ["jpg", "png", "jpeg", "webp"],
-    transformation: [
-      { width: 800, height: 800, crop: "limit", quality: "auto" }
-    ],
-    public_id: `${Date.now()}-${file.originalname.split('.')[0]}`
+    transformation: [{ width: 800, height: 800, crop: "limit", quality: "auto" }],
+    public_id: `${Date.now()}-${file.originalname.split('.')[0]}`,
+    resource_type: "auto" // Add this line
   })
 });
 

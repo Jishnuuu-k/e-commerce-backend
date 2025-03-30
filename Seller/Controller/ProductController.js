@@ -1,8 +1,8 @@
-const { adminRegister, adminLogin, addCategoryUsecase, addSubcategoryUsecase, createProduct, updateProduct, deleteProduct, getProductsBySubcategory } = require("../Usecase/ProductUsecase");
+const { AdminReg, AdminLog, addCategoryUsecase, addSubcategoryUsecase, createProduct, updateProduct, deleteProduct, getProductsBySubcategory } = require("../Usecase/ProductUsecase");
 
 exports.AdminRegistration = async (req, res) => {
     try {
-        await adminRegister(req.body);
+        await AdminReg(req.body);
         res.status(201).json({ 
             message: "Admin registered successfully!", 
             success: true 
@@ -18,7 +18,7 @@ exports.AdminRegistration = async (req, res) => {
 
 exports.AdminLogin = async (req, res) => {
     try {
-        const response = await adminLogin(req.body);
+        const response = await AdminLog(req.body);
 
         if (response.error) {
             return res.status(401).json({
@@ -83,19 +83,21 @@ exports.addSubcategory = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
     try {
-      const product = await createProduct({
-        ...req.body,
-        images: req.files.map(file => ({
-          public_id: file.public_id,
-          url: file.secure_url
-        }))
-      }, req.user._id);
-  
-      res.status(201).json({ success: true, product });
+        console.log("Uploaded files:", req.files); // Add this line
+        
+        const product = await createProduct({
+            ...req.body,
+            images: req.files.map(file => ({
+                public_id: file.public_id,  // Ensure these exist
+                url: file.secure_url       // Ensure these exist
+            }))
+        }, req.user._id);
+        
+        res.status(201).json({ success: true, product });
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+        res.status(400).json({ success: false, message: error.message });
     }
-  };
+};
   
   // Update Product
   exports.updateProduct = async (req, res) => {

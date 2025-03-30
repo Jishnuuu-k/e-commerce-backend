@@ -6,8 +6,8 @@ const productSchema = new mongoose.Schema({
   price: { type: Number, required: true },
 
   images: [{
-    public_id: { type: String, required: true },
-    url: { type: String, required: true }
+    public_id: String, // Remove 'required' temporarily
+    url: String        // Remove 'required' temporarily
   }],
   
   subcategory: { 
