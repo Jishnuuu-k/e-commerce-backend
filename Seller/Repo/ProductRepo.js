@@ -25,9 +25,9 @@ module.exports.addCategoryFn = async (categoryData) => {
     return await Category.create(categoryData);
 }
 
-module.exports.getCategoryFn = async (categories) => {
+module.exports.getCategoryFn = async () => {
     try {
-        const findCategories = await Category.find({categories})
+        const findCategories = await Category.find({}).populate("subcategories", "name");
         return findCategories
     } catch (error) {
         console.log(error)

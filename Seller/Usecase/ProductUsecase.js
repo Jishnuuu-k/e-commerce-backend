@@ -51,13 +51,11 @@ module.exports.AdminLog = async (data) => {
 }
 
 module.exports.addCategoryUsecase = async (categoryData) => {
+  console.log(categoryData,"AT USECASE")
     try {
         return await addCategoryFn(categoryData);
     } catch (error) {
-        if (error.code === 11000) {
-            throw new Error("Category name must be unique");
-        }
-        throw error;
+        console.log(error)
     }
 }
 

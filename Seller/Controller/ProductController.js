@@ -66,15 +66,20 @@ exports.addCategory = async (req, res) => {
 
 exports.getCategory = async (req,res) => {
     try {
-        const categories = req.body
-        const response = await getCategoryFn(categories)
-        console.log(response,"HEREEE")
+        const response = await getCategoryFn(); 
+        console.log(response)
+        res.json({
+            success: true,
+            message: "Categories",
+            response
+        });
     } catch (error) {
         console.log(error)
     }
 }
 
 exports.addSubcategory = async (req, res) => {
+    console.log(req.body)
     try {
         const { categoryId } = req.params; // Assuming you'll pass categoryId in route
         const subcategory = await addSubcategoryUsecase(categoryId, req.body);
