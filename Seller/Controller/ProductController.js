@@ -34,7 +34,8 @@ exports.AdminLogin = async (req, res) => {
             user: {
                 Fullname: response.admin.Fullname,
                 Email: response.admin.Email,
-                Username: response.admin.Username
+                Username: response.admin.Username,
+                role: response.admin.role
             }
         });
     } catch (error) {

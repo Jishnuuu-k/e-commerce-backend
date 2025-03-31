@@ -16,4 +16,5 @@ router.put("/products/:productId", authMiddleware, upload.array('images', 5), up
 router.delete("/products/:productId", authMiddleware, deleteProduct);
 
 router.get("/subcategories/:subcategoryId/products", getProductsBySubcategory);
+
 module.exports = router;

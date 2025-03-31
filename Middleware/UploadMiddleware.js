@@ -9,7 +9,7 @@ const storage = new CloudinaryStorage({
     allowed_formats: ["jpg", "png", "jpeg", "webp"],
     transformation: [{ width: 800, height: 800, crop: "limit", quality: "auto" }],
     public_id: `${Date.now()}-${file.originalname.split('.')[0]}`,
-    resource_type: "auto" // Add this line
+    resource_type: "auto"
   })
 });
 
