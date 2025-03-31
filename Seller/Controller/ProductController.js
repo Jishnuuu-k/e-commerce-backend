@@ -1,5 +1,5 @@
-const { AdminReg, AdminLog, addCategoryUsecase, addSubcategoryUsecase, createProduct, updateProduct, deleteProduct, getProductsBySubcategory } = require("../Usecase/ProductUsecase");
-
+const { AdminReg, AdminLog, addCategoryUsecase,  addSubcategoryUsecase, createProduct, updateProduct, deleteProduct, getProductsBySubcategory } = require("../Usecase/ProductUsecase");
+const {getCategoryFn} = require("../Repo/ProductRepo")
 exports.AdminRegistration = async (req, res) => {
     try {
         await AdminReg(req.body);
@@ -47,6 +47,7 @@ exports.AdminLogin = async (req, res) => {
 }
 
 exports.addCategory = async (req, res) => {
+    console.log(req.body,"DTAAA")
     try {
         const category = await addCategoryUsecase(req.body);
         res.status(201).json({
@@ -60,6 +61,16 @@ exports.addCategory = async (req, res) => {
             success: false,
             message: error.message || "Failed to add category"
         });
+    }
+}
+
+exports.getCategory = async (req,res) => {
+    try {
+        const categories = req.body
+        const response = await getCategoryFn(categories)
+        console.log(response,"HEREEE")
+    } catch (error) {
+        console.log(error)
     }
 }
 

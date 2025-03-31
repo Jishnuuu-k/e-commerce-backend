@@ -9,7 +9,6 @@ const subcategorySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Category', 
     required: true },
-    description: String,
   createdAt: { 
     type: Date, 
     default: Date.now 

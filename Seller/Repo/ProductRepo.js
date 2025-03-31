@@ -25,6 +25,15 @@ module.exports.addCategoryFn = async (categoryData) => {
     return await Category.create(categoryData);
 }
 
+module.exports.getCategoryFn = async (categories) => {
+    try {
+        const findCategories = await Category.find({categories})
+        return findCategories
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports.addSubcategoryFn = async (categoryId, subcategoryData) => {
     const subcategory = await Subcategory.create({
         ...subcategoryData,
