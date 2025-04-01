@@ -2,6 +2,7 @@ const AdminModel = require("../Model/AdminModel")
 const Category  = require("../Model/CategoryModel")          
 const Subcategory  = require("../Model/Subcategory")          
 const ProductModel    = require("../Model/ProductModel")
+const user    = require("../../Users/Model/Usermodel")
 
 module.exports.AdminRegFn = async (data) => {
     try {
@@ -29,6 +30,15 @@ module.exports.getCategoryFn = async () => {
     try {
         const findCategories = await Category.find({}).populate("subcategories", "name");
         return findCategories
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+module.exports.getUsersFn = async () => {
+    try {
+        const findusers = await user.find({});
+        return findusers
     } catch (error) {
         console.log(error)
     }
