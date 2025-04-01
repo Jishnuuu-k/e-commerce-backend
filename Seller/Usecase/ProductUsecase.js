@@ -71,46 +71,60 @@ module.exports.addSubcategoryUsecase = async (categoryId, subcategoryData) => {
 }
 
 
-module.exports.createProduct = async (productData, userId) => {
-    try {
-      const productWithUser = { ...productData, createdBy: userId };
-      return await createProductFn(productWithUser);
-    } catch (error) {
-      if (productData.images?.length) {
-        await cloudinary.api.delete_resources(
-          productData.images.map(img => img.public_id)
-        );
-      }
-      throw error;
-    }
-  };
+exports.createProduct = async (req) => {
+  const { name, description, price, subcategory, stock } = req.body;
   
-  module.exports.updateProduct = async (productId, updateData, userId) => {
-    const existingProduct = await getProductByIdFn(productId);
-    
-    if (existingProduct.createdBy.toString() !== userId) {
-      throw new Error("Unauthorized product update");
-    }
+  if (!name || !description || !price || !subcategory) {
+    throw new Error("All fields are required");
+  }
+
+  let images = [];
+  if (req.files) {
+    images = req.files.map(file => ({ public_id: file.filename, url: file.path }));
+  }
+
+  return await createProductFn({
+    name,
+    description,
+    price,
+    images,
+    subcategory,
+    stock,
+  });
+};
+
+exports.updateProduct = async (req) => {
+  const { name, description, price, subcategory, stock } = req.body;
+  const productId = req.params.productId;
+
+  let updatedFields = { name, description, price, subcategory, stock };
+  let newImages = [];
+
+  if (req.files && req.files.length > 0) {
+    newImages = req.files.map(file => ({ public_id: file.filename, url: file.path }));
+    updatedFields.images = newImages;
+  }
+
+  return await updateProductFn(productId, updatedFields);
+};
+
+exports.deleteProduct = async (productId) => {
+  const product = await productRepository.getProductById(productId);
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  for (const image of product.images) {
+    await cloudinary.uploader.destroy(image.public_id);
+  }
+
+  return await deleteProductFn(productId);
+};
   
-    return await updateProductFn(productId, updateData);
-  };
-  
-  module.exports.deleteProduct = async (productId, userId) => {
-    const product = await getProductByIdFn(productId);
-    
-    if (product.createdBy.toString() !== userId) {
-      throw new Error("Unauthorized product deletion");
-    }
-  
-    if (product.images?.length) {
-      await cloudinary.api.delete_resources(
-        product.images.map(img => img.public_id)
-      );
-    }
-  
-    return await deleteProductFn(productId);
-  };
-  
-  module.exports.getProductsBySubcategory = async (subcategoryId) => {
-    return await getProductsBySubcategoryFn(subcategoryId);
-  };
+module.exports.getProductsBySubcategory = async (subcategoryId) => {
+  try {
+    return await getProductByIdFn(subcategoryId);
+  } catch (error) {
+    console.log(error)
+  }
+};

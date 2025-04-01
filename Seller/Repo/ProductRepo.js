@@ -2,7 +2,7 @@ const AdminModel = require("../Model/AdminModel")
 const Category  = require("../Model/CategoryModel")          
 const Subcategory  = require("../Model/Subcategory")          
 const ProductModel    = require("../Model/ProductModel")
-const user    = require("../../Users/Model/Usermodel")
+const user = require("../../Users/Model/Usermodel")
 
 module.exports.AdminRegFn = async (data) => {
     try {
@@ -58,22 +58,23 @@ module.exports.addSubcategoryFn = async (categoryId, subcategoryData) => {
     return subcategory;
 }
 
-module.exports.createProductFn = async (productData) => {
-    return await ProductModel.create(productData);
+exports.createProductFn = async (productData) => {
+    const newProduct = new ProductModel(productData);
+    return await newProduct.save();
   };
   
-  module.exports.updateProductFn = async (productId, updateData) => {
-    return await ProductModel.findByIdAndUpdate(
-      productId, 
-      updateData, 
-      { new: true, runValidators: true }  // Added validation
-    );
+  exports.updateProductFn = async (productId, updateFields) => {
+    return await ProductModel.findByIdAndUpdate(productId, updateFields, { new: true });
   };
   
-  module.exports.deleteProductFn = async (productId) => {
+  exports.deleteProductFn = async (productId) => {
     return await ProductModel.findByIdAndDelete(productId);
   };
   
-  module.exports.getProductByIdFn = async (productId) => {
-    return await ProductModel.findById(productId);
-  };
+  exports.getProductByIdFn = async (subcategoryId) => {
+    try {
+        return await ProductModel.find({ subcategory: subcategoryId }); 
+    } catch (error) {
+        console.log(error)
+    }
+};

@@ -114,52 +114,39 @@ exports.addSubcategory = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
     try {
-        console.log("Uploaded files:", req.files); // Add this line
-        
-        const product = await createProduct({
-            ...req.body,
-            images: req.files.map(file => ({
-                public_id: file.public_id,  // Ensure these exist
-                url: file.secure_url       // Ensure these exist
-            }))
-        }, req.user._id);
-        
-        res.status(201).json({ success: true, product });
+      const result = await createProduct(req);
+      res.status(201).json(result);
     } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
-    }
-};
-  
-  // Update Product
-  exports.updateProduct = async (req, res) => {
-    try {
-      const product = await updateProduct(
-        req.params.productId,
-        req.body,
-        req.user._id
-      );
-      res.json({ success: true, product });
-    } catch (error) {
-      res.status(403).json({ success: false, message: error.message });
+      res.status(400).json({ error: error.message });
     }
   };
   
-  // Delete Product
+  exports.updateProduct = async (req, res) => {
+    try {
+      const result = await updateProduct(req);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
+  
   exports.deleteProduct = async (req, res) => {
     try {
-      await deleteProduct(req.params.productId, req.user._id);
-      res.json({ success: true, message: "Product deleted" });
+      await deleteProduct(req.params.productId);
+      res.status(200).json({ message: "Product deleted successfully" });
     } catch (error) {
-      res.status(403).json({ success: false, message: error.message });
+      res.status(400).json({ error: error.message });
     }
   };
   
   // Get Products by Subcategory
   exports.getProductsBySubcategory = async (req, res) => {
+    console.log(req.params.subcategoryId)
     try {
       const products = await getProductsBySubcategory(req.params.subcategoryId);
       res.json({ success: true, products });
     } catch (error) {
       res.status(400).json({ success: false, message: error.message });
+      console.log(error)
     }
   };
