@@ -1,6 +1,7 @@
 const UserModel = require("../Model/Usermodel")
-const ProductModel = require("../../Seller/Model/ProductModel")
-const CategoryModel = require("../../Seller/Model/CategoryModel")
+const Product = require("../../Seller/Model/ProductModel")
+const Category = require("../../Seller/Model/CategoryModel")
+const Subcategory = require("../../Seller/Model/Subcategory")
 
 module.exports.UserRegistration = async (data) => {
     try {
@@ -50,17 +51,28 @@ module.exports.FindUser = async (Username) => {
 
 module.exports.FindProduct = async (_id) => {
     try {
-        const Product = await ProductModel.findOne({ _id });
+        const Product = await Product.findOne({ _id });
         return Product 
     } catch (error) {
         console.log(error)
     }
 }
 
-module.exports.getallcategoryFn = async() => {
+module.exports.getAllCategoriesWithSubcategoriesAndProducts = async() => {
     try {
-        const Allcategories = await CategoryModel.find()
-        return Allcategories
+        
+        const categories = await Category.find()
+            .populate({
+                path: 'subcategories', // Populate subcategories inside categories
+                model: 'Subcategory',
+                populate: { // Nested population for products
+                    path: 'products',
+                    model: 'Product'
+                }
+            });
+        
+        return categories;
+
     } catch (error) {
         console.log(error)
     }
