@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv")
 
-const {UserRegistration,UserLoginFn,getAllCategoriesWithSubcategoriesAndProducts} = require ("../Repo/Userrepo")
+const {UserRegistration,UserLoginFn} = require ("../Repo/Userrepo")
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret"; // Fallback in case .env is missing
@@ -50,14 +50,7 @@ module.exports.Userlogin = async (data) => {
     }
 };
 
-module.exports.getCategoriesWithDetails = async () => {
-    try {
-        const categories = await getAllCategoriesWithSubcategoriesAndProducts();
-        return { success: true, categories };
-    } catch (error) {
-        console.log(error)
-    }
-}
+
 
 module.exports.Purcahsee = async (Userentry, Product, User) => {
     try {

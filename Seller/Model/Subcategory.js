@@ -22,5 +22,7 @@ subcategorySchema.virtual('products', {
   justOne: false  // This is an array, so set to false
 });
 
+subcategorySchema.set('toObject', { virtuals: true });
+subcategorySchema.set('toJSON', { virtuals: true });
 
 module.exports = mongoose.model('Subcategory', subcategorySchema);

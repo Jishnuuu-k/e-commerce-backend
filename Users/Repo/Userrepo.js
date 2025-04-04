@@ -58,21 +58,16 @@ module.exports.FindProduct = async (_id) => {
     }
 }
 
-module.exports.getAllCategoriesWithSubcategoriesAndProducts = async() => {
+module.exports.getallcategoryFn = async() => {
     try {
-        
-        const categories = await Category.find()
-            .populate({
-                path: 'subcategories', // Populate subcategories inside categories
-                model: 'Subcategory',
-                populate: { // Nested population for products
-                    path: 'products',
-                    model: 'Product'
-                }
-            });
-        
-        return categories;
-
+        const Categories = await Category.find().populate({
+            path: 'subcategories',
+            populate: {
+                path: 'products'
+            }
+        })
+        console.log(JSON.stringify(Categories, null, 2));
+        return Categories
     } catch (error) {
         console.log(error)
     }

@@ -126,15 +126,10 @@ const Purchase = async (req, res) => {
 
 const getallcategories = async (req,res) => {
     try {
-        const result = await getCategoriesWithDetails();
-        if (result.success) {
-            res.status(200).json({
-                success: true,
-                categories: result.categories
-            });
-        } else {
-            res.status(400).json({ success: false, message: result.message });
-        }
+        const Allcategories = await getallcategoryFn()
+        res.json({
+            response: Allcategories
+        })
       } catch (error) {
         res.status(500).json({ success: false, message: error.message });
       }
