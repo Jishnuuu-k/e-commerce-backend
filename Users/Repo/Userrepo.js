@@ -51,8 +51,8 @@ module.exports.FindUser = async (Username) => {
 
 module.exports.FindProduct = async (_id) => {
     try {
-        const Product = await Product.findOne({ _id });
-        return Product 
+        const Products = await Product.findOne({ _id });
+        return Products 
     } catch (error) {
         console.log(error)
     }
@@ -66,7 +66,6 @@ module.exports.getallcategoryFn = async() => {
                 path: 'products'
             }
         })
-        console.log(JSON.stringify(Categories, null, 2));
         return Categories
     } catch (error) {
         console.log(error)

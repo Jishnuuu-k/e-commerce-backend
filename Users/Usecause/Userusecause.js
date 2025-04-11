@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv")
 
-const {UserRegistration,UserLoginFn} = require ("../Repo/Userrepo")
+const {UserRegistration,UserLoginFn,FindProduct} = require ("../Repo/Userrepo")
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret"; // Fallback in case .env is missing
@@ -52,25 +52,15 @@ module.exports.Userlogin = async (data) => {
 
 
 
-module.exports.Purcahsee = async (Userentry, Product, User) => {
+module.exports.PurchaseUsecase = async(Item,Itemquantity) => {
     try {
-        console.log(Userentry, "✅ USER ENTRY HAS BEEN ARRIVED IN USECASE ");
-        console.log(Product, "✅ PRODUCT HAS BEEN ARRIVED IN USECASE ");
-        console.log(User, "✅ USER HAS BEEN ARRIVED IN USECASE ");
-
-        let { Quantity } = Userentry;
-        let { price, stock } = Product;
-
-        let totalPrice = Number(Quantity) * Number(price);
-        console.log("🛒 Calculated Total Price:", totalPrice);
-
-        if (isNaN(totalPrice)) {
-            throw new Error("Calculation error: Quantity or Price is not a valid number");
-        }
-
-        return { success: true, totalPrice }; // Return total price to the controller
+        let { _id } = Item
+        const Product = await FindProduct(_id)
+        console.log(Product,"Returned at usecase")
+        TotalPrice = Product.price * Itemquantity
+        console.log("TOTAL PRICE :",TotalPrice)
+        return TotalPrice
     } catch (error) {
-        console.error("❌ Purchase Usecase Error:", error);
-        throw error;
+        console.log(error)
     }
-};
+}

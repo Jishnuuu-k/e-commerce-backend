@@ -1,4 +1,4 @@
-const { UserReg, Userlogin, Purcahsee ,getCategoriesWithDetails} = require("../Usecause/Userusecause")
+const { UserReg, Userlogin, Purcahsee ,PurchaseUsecase} = require("../Usecause/Userusecause")
 const {CheckUsernameFn, checkEmailFn, FindUser, FindProduct, getallcategoryFn} = require ("../Repo/Userrepo");
 const { json } = require("express");
 const jwt = require("jsonwebtoken");
@@ -135,4 +135,16 @@ const getallcategories = async (req,res) => {
       }
 }
 
-module.exports = {UserRegistration, UserLogin, Purchase, getallcategories}
+const purachse = async (req,res) => {
+    try {
+        const Item = (req.body.product)
+        const Itemquantity = (req.body.quantity)
+        await PurchaseUsecase(Item,Itemquantity)
+        res.json({
+            Total: TotalPrice
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+module.exports = {UserRegistration, UserLogin, Purchase, getallcategories,purachse}
