@@ -52,13 +52,16 @@ module.exports.Userlogin = async (data) => {
 
 
 
-module.exports.PurchaseUsecase = async(Item,Itemquantity) => {
+module.exports.PurchaseUsecase = async(Item,Itemquantity,User) => {
     try {
         let { _id } = Item
         const Product = await FindProduct(_id)
         console.log(Product,"Returned at usecase")
+        let {name, price} = Product
         TotalPrice = Product.price * Itemquantity
+
         console.log("TOTAL PRICE :",TotalPrice)
+        console.log("User :",User)
         return TotalPrice
     } catch (error) {
         console.log(error)

@@ -139,7 +139,8 @@ const purachse = async (req,res) => {
     try {
         const Item = (req.body.product)
         const Itemquantity = (req.body.quantity)
-        await PurchaseUsecase(Item,Itemquantity)
+        const User = (req.body.userId)
+        await PurchaseUsecase(Item,Itemquantity,User)
         res.json({
             Total: TotalPrice
         })
