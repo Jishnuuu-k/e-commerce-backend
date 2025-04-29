@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv")
+const Orders = require('../Model/Orders')
 
 const {UserRegistration,UserLoginFn,FindProduct} = require ("../Repo/Userrepo")
 
@@ -56,13 +57,13 @@ module.exports.PurchaseUsecase = async(Item,Itemquantity,User) => {
     try {
         let { _id } = Item
         const Product = await FindProduct(_id)
-        console.log(Product,"Returned at usecase")
-        let {name, price} = Product
+        let {name, price, images} = Product
         TotalPrice = Product.price * Itemquantity
 
-        console.log("TOTAL PRICE :",TotalPrice)
-        console.log("User :",User)
-        return TotalPrice
+        OrderDetails = {name, price, images, Itemquantity, User, TotalPrice}
+        console.log(OrderDetails,"OrderDetails")
+
+        await Orders.create(OrderDetails)
     } catch (error) {
         console.log(error)
     }
