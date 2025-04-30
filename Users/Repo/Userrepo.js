@@ -2,6 +2,7 @@ const UserModel = require("../Model/Usermodel")
 const Product = require("../../Seller/Model/ProductModel")
 const Category = require("../../Seller/Model/CategoryModel")
 const Subcategory = require("../../Seller/Model/Subcategory")
+const ordersModel = require("../Model/Orders")
 
 module.exports.UserRegistration = async (data) => {
     try {
@@ -67,6 +68,20 @@ module.exports.getallcategoryFn = async() => {
             }
         })
         return Categories
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+module.exports.MyordersFn = async(_id) => {
+    try {
+        const User = await UserModel.find({_id})
+        console.log(User,"USER DETAILS")
+        let {Username} = User
+        const MYORDERS = await ordersModel.find({Username})
+        console.log(MYORDERS,"MY ORDERS")
+
+        return MYORDERS
     } catch (error) {
         console.log(error)
     }
